@@ -5,8 +5,10 @@ import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class BuyStepdefs {
+public class
+BuyStepdefs {
 
     private ProductCatalog catalog;
     private Order order;
@@ -31,6 +33,18 @@ public class BuyStepdefs {
     @Then("total should be {float}")
     public void total_should_be(double total) {
         assertEquals(total, order.getTotal());
+    }
+
+    @When("I over buy {string} with quantity {int}")
+    public void i_buy_product_more_than_stock(String name, int quantity) throws NotEnoughStock {
+        Product prod = catalog.getProduct(name);
+        assertThrows(NotEnoughStock.class,
+                () -> order.addItem(prod, quantity));
+    }
+    @Then("{string} stock has only {int}")
+    public void stock_has(String name, int stock) {
+        Product prod = catalog.getProduct(name);
+        assertEquals(stock, prod.getStock());
     }
 }
 
